@@ -154,9 +154,12 @@
       background: rgba(0,0,0,.20); /* lighter so image shows through */
       backdrop-filter: blur(3px);
       box-shadow: var(--shadow);
-
-      transform: translateY(var(--panelY, 0px));
-      transition: transform .05s linear;
+    }
+    .hero-body{
+      opacity: 1;
+      transform: none;
+      max-height: none;
+      overflow: visible;
     }
 
     /* .eyebrow{
@@ -235,6 +238,33 @@
       .topbar .title{ max-width: 54vw; }
       .hero-inner{ padding-bottom: 60px; }
     }
+    @media(max-width:600px){
+      :root{
+        --panelOffset: 380px;
+      }
+      .hero{
+        min-height: 92svh;
+      }
+      .hero-inner{
+        min-height: 92svh;
+        padding: 16px 16px 40px;
+        align-items: flex-start;
+      }
+      .hero-panel{
+        background: rgba(0,0,0,.08);
+        border-color: rgba(255,255,255,.14);
+        margin-top: var(--panelOffset);
+      }
+      .hero-media,
+      .hero-overlay{
+        height: 92svh;
+        inset: 0 0 auto 0;
+      }
+      .hero-media img{
+        object-position: 18% 22%;
+        transform: scale(1.10);
+      }
+    }
 
     .note{
       padding:16px;
@@ -285,21 +315,23 @@
 
         <h1 id="heroTitle">100 Miles for<br>Back on My Feet</h1>
 
-        <p>
-          I’m running the Mohican 100 Mile ultramarathon to support
-          <strong>Back on My Feet</strong> — an organization that uses running,
-          routine, and community to help individuals experiencing homelessness
-          regain stability and independence.
-        </p>
+        <div class="hero-body" id="heroBody">
+          <p>
+            I’m running the Mohican 100 Mile ultramarathon to support
+            <strong>Back on My Feet</strong> — an organization that uses running,
+            routine, and community to help individuals experiencing homelessness
+            regain stability and independence.
+          </p>
 
-        <div class="cta">
-          <!-- replace these links -->
-          <a class="btn primary" href="https://example.com/pledge" target="_blank" rel="noopener">
-            Pledge per mile →
-          </a>
-          <a class="btn green" href="https://example.com/donate" target="_blank" rel="noopener">
-            Donate once →
-          </a>
+          <div class="cta">
+            <!-- replace these links -->
+            <a class="btn primary" href="https://example.com/pledge" target="_blank" rel="noopener">
+              Pledge per mile →
+            </a>
+            <a class="btn green" href="https://example.com/donate" target="_blank" rel="noopener">
+              Donate once →
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -352,7 +384,6 @@
     // 4) Sticky top bar fades in
 
     const hero = document.getElementById('hero');
-    const heroPanel = document.getElementById('heroPanel');
     const topbar = document.getElementById('topbar');
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
@@ -360,6 +391,7 @@
     function onScroll(){
       const rect = hero.getBoundingClientRect();
       const vh = window.innerHeight || 1;
+      const isMobile = window.matchMedia('(max-width: 600px)').matches;
 
       // Progress through the hero section:
       // rect.top = 0 at page start; goes negative as we scroll down.
@@ -368,19 +400,18 @@
       const range = Math.max(vh * 0.9, rect.height * 0.65); // scroll range we animate over
       const t = clamp(scrolled / range, 0, 1);    // 0..1
 
-      // Move panel up: starts lower, then rises smoothly
-      // At t=0: +34px (lower), at t=1: -40px (higher)
-      const panelY = (34 * (1 - t)) + (-40 * t);
-      hero.style.setProperty('--panelY', panelY.toFixed(1) + 'px');
-
       // Fade image and overlay as we scroll
       // Keep image strong early, then fade towards the end.
-      const imgOpacity = 1 - (t * 0.55); // down to ~0.45
-      hero.style.setProperty('--imgOpacity', clamp(imgOpacity, 0.35, 1).toFixed(3));
+      const imgFade = isMobile ? 0.35 : 0.55;
+      const imgMin = isMobile ? 0.55 : 0.35;
+      const imgOpacity = 1 - (t * imgFade);
+      hero.style.setProperty('--imgOpacity', clamp(imgOpacity, imgMin, 1).toFixed(3));
 
       // Overlay also fades slightly so the image "opens up" a bit while text rises
-      const overlayOpacity = 1 - (t * 0.35);
-      hero.style.setProperty('--overlayOpacity', clamp(overlayOpacity, 0.55, 1).toFixed(3));
+      const overlayFade = isMobile ? 0.22 : 0.35;
+      const overlayMin = isMobile ? 0.40 : 0.55;
+      const overlayOpacity = 1 - (t * overlayFade);
+      hero.style.setProperty('--overlayOpacity', clamp(overlayOpacity, overlayMin, 1).toFixed(3));
 
       // Sticky top bar appears late in the hero scroll
       // Start showing around t ~ 0.55 and fully visible by t ~ 0.85
