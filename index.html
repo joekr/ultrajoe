@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>100 Miles for Back on My Feet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Running the Mohican 100 Mile ultramarathon to support Back on My Feet. Donate per mile or one time." />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --text:rgba(255,255,255,.96);
+      --muted:rgba(255,255,255,.80);
+      --line:rgba(255,255,255,.16);
+      --accent:#7c3aed;
+      --accent2:#22c55e;
+      --radius:18px;
+      --max:1100px;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    a{ color:inherit; text-decoration:none; }
+
+    /* ---------- Sticky top bar ---------- */
+    .topbar{
+      position:fixed;
+      inset: 12px 12px auto 12px;
+      z-index: 60;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(8,12,20,.55);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+
+      opacity: 0;
+      transform: translateY(-14px);
+      pointer-events: none;
+
+      transition: opacity .2s ease, transform .2s ease;
+      max-width: min(var(--max), calc(100% - 24px));
+      margin: 0 auto;
+      left: 0; right: 0;
+    }
+    .topbar.show{
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .topbar .title{
+      font-weight: 850;
+      letter-spacing: -.2px;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      max-width: 62vw;
+    }
+    .topbar .actions{ display:flex; gap:10px; flex:0 0 auto; }
+    .topbtn{
+      padding: 9px 12px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      font-weight: 750;
+      font-size: 13px;
+    }
+    .topbtn.primary{
+      border-color: rgba(124,58,237,.6);
+      background: linear-gradient(135deg,var(--accent),#3b82f6);
+    }
+    .topbtn.green{
+      border-color: rgba(34,197,94,.6);
+      background: linear-gradient(135deg,var(--accent2),#10b981);
+    }
+
+    /* ---------- Hero ---------- */
+    .hero{
+      position:relative;
+      min-height: 96vh;
+      overflow:hidden;
+      display:block;
+      background: var(--bg);
+    }
+
+    .hero-media{
+      position:absolute;
+      inset:0;
+      z-index:0;
+    }
+    .hero-media img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+      transform-origin: center;
+      opacity: var(--imgOpacity, 1);
+      transition: opacity .05s linear;
+    }
+
+    /* Gentle readability overlay, not a blackout */
+    .hero-overlay{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      /* Keep image visible: gradients are lighter + localized */
+      background:
+        radial-gradient(900px 520px at 20% 78%, rgba(0,0,0,.52), transparent 62%),
+        linear-gradient(to top,
+          rgba(11,18,32,.92) 0%,
+          rgba(11,18,32,.70) 28%,
+          rgba(11,18,32,.30) 62%,
+          rgba(11,18,32,.08) 100%
+        );
+      opacity: var(--overlayOpacity, 1);
+      transition: opacity .05s linear;
+    }
+
+    .hero-inner{
+      position:relative;
+      z-index:2;
+      max-width:var(--max);
+      margin:0 auto;
+      padding: 22px 20px 70px;
+      min-height: 96vh;
+      display:flex;
+      align-items:flex-end;
+    }
+
+    /* Start lower so the image is visible first; then parallax it up on scroll */
+    .hero-panel{
+      width: min(760px, 100%);
+      padding: 18px 18px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.20); /* lighter so image shows through */
+      backdrop-filter: blur(3px);
+      box-shadow: var(--shadow);
+
+      transform: translateY(var(--panelY, 0px));
+      transition: transform .05s linear;
+    }
+
+    /* .eyebrow{
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(0,0,0,.28);
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:12px;
+    } */
+
+    h1{
+      font-size: clamp(36px,5vw,64px);
+      line-height: 1.05;
+      margin: 0 0 12px;
+      letter-spacing: -1px;
+      text-shadow: 0 6px 24px rgba(0,0,0,.55);
+    }
+
+    .hero p{
+      max-width: 60ch;
+      color: rgba(255,255,255,.86);
+      font-size: 18px;
+      margin: 0 0 18px;
+      text-shadow: 0 4px 18px rgba(0,0,0,.45);
+    }
+
+    .cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top: 10px; }
+
+    .btn{
+      padding:14px 18px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      font-weight:800;
+      background:rgba(255,255,255,.08);
+      box-shadow: 0 10px 26px rgba(0,0,0,.20);
+    }
+    .btn.primary{
+      background:linear-gradient(135deg,var(--accent),#3b82f6);
+      border-color:rgba(124,58,237,.65);
+    }
+    .btn.green{
+      background:linear-gradient(135deg,var(--accent2),#10b981);
+      border-color:rgba(34,197,94,.65);
+    }
+
+    /* ---------- Content ---------- */
+    main{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:56px 20px;
+      display:grid;
+      gap:40px;
+    }
+    section{
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:26px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+    }
+    h2{ margin-top:0; font-size:24px; letter-spacing:-.3px; }
+
+    ul{ margin:12px 0 0 18px; color:var(--muted); }
+    li{ margin:6px 0; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:26px;
+    }
+    @media(max-width:900px){
+      .grid{ grid-template-columns:1fr; }
+      .topbar .title{ max-width: 54vw; }
+      .hero-inner{ padding-bottom: 60px; }
+    }
+
+    .note{
+      padding:16px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.25);
+      background:rgba(0,0,0,.25);
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    footer{
+      border-top:1px solid var(--line);
+      padding:30px 20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sticky top bar -->
+  <div class="topbar" id="topbar" role="navigation" aria-label="Sticky title and actions">
+    <div class="title">100 Miles for Back on My Feet</div>
+    <div class="actions">
+      <!-- replace these links -->
+      <a class="topbtn primary" href="https://example.com/pledge" target="_blank" rel="noopener">Pledge</a>
+      <a class="topbtn green" href="https://example.com/donate" target="_blank" rel="noopener">Donate</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero" id="hero">
+    <div class="hero-media" aria-hidden="true">
+      <img
+        src="assets/mohican-cartoon.png"
+        alt=""
+        id="heroImg"
+        loading="eager"
+      />
+    </div>
+    <div class="hero-overlay" id="heroOverlay" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-panel" id="heroPanel">
+        <!-- <span class="eyebrow">Mohican 100 Mile • Trail Loop • Aid Station</span> -->
+
+        <h1 id="heroTitle">100 Miles for<br>Back on My Feet</h1>
+
+        <p>
+          I’m running the Mohican 100 Mile ultramarathon to support
+          <strong>Back on My Feet</strong> — an organization that uses running,
+          routine, and community to help individuals experiencing homelessness
+          regain stability and independence.
+        </p>
+
+        <div class="cta">
+          <!-- replace these links -->
+          <a class="btn primary" href="https://example.com/pledge" target="_blank" rel="noopener">
+            Pledge per mile →
+          </a>
+          <a class="btn green" href="https://example.com/donate" target="_blank" rel="noopener">
+            Donate once →
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main>
+    <section>
+      <h2>How it works</h2>
+      <ul>
+        <li><strong>100-mile looped ultramarathon</strong></li>
+        <li>Live tracking via <strong>Garmin inReach</strong></li>
+        <li>Pledge per mile or donate a one-time amount</li>
+        <li>Final donation total reflects miles completed</li>
+      </ul>
+    </section>
+
+    <section class="grid">
+      <div>
+        <h2>Why Back on My Feet</h2>
+        <p style="color:var(--muted);">
+          Ultra running is about showing up when it’s uncomfortable.
+          Back on My Feet uses the same ideas — running, consistency,
+          and community — to help people rebuild stability and move forward.
+        </p>
+        <p style="color:var(--muted);">
+          This race is hard. Their work is harder.
+          I want these miles to matter beyond me.
+        </p>
+      </div>
+
+      <div class="note">
+        <strong>Race-day plan</strong><br><br>
+        This page will show live tracking and updates during the race.
+        Afterward, I’ll post the final mileage and total raised.
+        If I don’t reach 100 miles, donations still apply to the distance completed.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Built for GitHub Pages • Thank you for supporting Back on My Feet
+  </footer>
+
+  <script>
+    // Scroll behavior goals:
+    // 1) Hero text starts lower (shows more of the image initially)
+    // 2) As user scrolls, text panel moves up over the image
+    // 3) Image + overlay slowly fade out
+    // 4) Sticky top bar fades in
+
+    const hero = document.getElementById('hero');
+    const heroPanel = document.getElementById('heroPanel');
+    const topbar = document.getElementById('topbar');
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function onScroll(){
+      const rect = hero.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+
+      // Progress through the hero section:
+      // rect.top = 0 at page start; goes negative as we scroll down.
+      // We'll map from [0 .. -vh] roughly, but allow a bit more length.
+      const scrolled = -rect.top;                 // 0 -> positive
+      const range = Math.max(vh * 0.9, rect.height * 0.65); // scroll range we animate over
+      const t = clamp(scrolled / range, 0, 1);    // 0..1
+
+      // Move panel up: starts lower, then rises smoothly
+      // At t=0: +34px (lower), at t=1: -40px (higher)
+      const panelY = (34 * (1 - t)) + (-40 * t);
+      hero.style.setProperty('--panelY', panelY.toFixed(1) + 'px');
+
+      // Fade image and overlay as we scroll
+      // Keep image strong early, then fade towards the end.
+      const imgOpacity = 1 - (t * 0.55); // down to ~0.45
+      hero.style.setProperty('--imgOpacity', clamp(imgOpacity, 0.35, 1).toFixed(3));
+
+      // Overlay also fades slightly so the image "opens up" a bit while text rises
+      const overlayOpacity = 1 - (t * 0.35);
+      hero.style.setProperty('--overlayOpacity', clamp(overlayOpacity, 0.55, 1).toFixed(3));
+
+      // Sticky top bar appears late in the hero scroll
+      // Start showing around t ~ 0.55 and fully visible by t ~ 0.85
+      const showT = clamp((t - 0.55) / 0.30, 0, 1);
+      if (showT > 0.02) topbar.classList.add('show');
+      else topbar.classList.remove('show');
+
+      // Also animate opacity/transform smoothly via inline style for finer control
+      topbar.style.opacity = showT.toFixed(3);
+      topbar.style.transform = `translateY(${(-14 + 14 * showT).toFixed(1)}px)`;
+      topbar.style.pointerEvents = showT > 0.2 ? 'auto' : 'none';
+    }
+
+    document.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  </script>
+
+</body>
+</html>
