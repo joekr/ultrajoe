@@ -286,6 +286,16 @@
       color:var(--muted);
       font-size:14px;
     }
+    .map-preview{
+      width:100%;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:12px;
+      background:#0b1220;
+      display:block;
+    }
+    @media(max-width:600px){
+      .map-preview{ border-radius:10px; }
+    }
 
     footer{
       border-top:1px solid var(--line);
@@ -392,6 +402,22 @@
         This page will show live tracking and updates during the race.
         Afterward, I’ll post the final mileage and total raised.
         If I don’t reach 100 miles, donations still apply.
+        <br><br>
+        <span style="color:var(--muted);">
+          Below is the official course map until I share live updates on race day.
+        </span>
+        <br><br>
+        <img
+          class="map-preview"
+          src="assets/OfficialMohican100Map-220517.png"
+          alt="Official Mohican 100 map preview"
+          loading="lazy"
+        />
+        <div style="margin-top:10px;">
+          <a href="assets/OfficialMohican100Map-220517.pdf" target="_blank" rel="noopener">
+            View full map (PDF)
+          </a>
+        </div>
       </div>
     </section>
   </main>
