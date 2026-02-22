@@ -366,9 +366,9 @@
       <section id="race-stats">
         <h2>2026 Stats</h2>
         <p style="color:var(--muted); margin: 0;">
-          <strong>Distance:</strong> 209.7 mi<br>
-          <strong>Time:</strong> 39h 6m<br>
-          <strong>Elev Gain:</strong> 11,188 ft
+          <strong>Distance:</strong> <span id="stat-distance">209.7 mi</span><br>
+          <strong>Time:</strong> <span id="stat-time">39h 6m</span><br>
+          <strong>Elev Gain:</strong> <span id="stat-elev">11,188 ft</span>
         </p>
       </section>
 
@@ -478,6 +478,27 @@
     document.addEventListener('scroll', onScroll, { passive:true });
     window.addEventListener('resize', onScroll);
     onScroll();
+
+    async function loadStats(){
+      try{
+        const res = await fetch('https://ultra-tracker.fly.dev/api/stats/2026', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data) return;
+
+        const distance = document.getElementById('stat-distance');
+        const time = document.getElementById('stat-time');
+        const elev = document.getElementById('stat-elev');
+
+        if (distance && data.distance) distance.textContent = data.distance;
+        if (time && data.moving_time) time.textContent = data.moving_time;
+        if (elev && data.elevation_gain) elev.textContent = data.elevation_gain;
+      } catch (_err) {
+        // keep fallback values
+      }
+    }
+
+    loadStats();
   </script>
 
 </body>
