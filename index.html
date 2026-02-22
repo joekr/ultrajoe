@@ -368,7 +368,8 @@
         <p style="color:var(--muted); margin: 0;">
           <strong>Distance:</strong> <span id="stat-distance">209.7 mi</span><br>
           <strong>Time:</strong> <span id="stat-time">39h 6m</span><br>
-          <strong>Elev Gain:</strong> <span id="stat-elev">11,188 ft</span>
+          <strong>Elev Gain:</strong> <span id="stat-elev">11,188 ft</span><br>
+          <strong>Last Updated:</strong> <span id="stat-updated">--</span>
         </p>
       </section>
 
@@ -489,10 +490,22 @@
         const distance = document.getElementById('stat-distance');
         const time = document.getElementById('stat-time');
         const elev = document.getElementById('stat-elev');
+        const updated = document.getElementById('stat-updated');
 
         if (distance && data.distance) distance.textContent = data.distance;
         if (time && data.moving_time) time.textContent = data.moving_time;
         if (elev && data.elevation_gain) elev.textContent = data.elevation_gain;
+        if (updated && data.as_of){
+          const d = new Date(data.as_of);
+          if (!Number.isNaN(d.getTime())){
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            const yyyy = d.getFullYear();
+            const hh = String(d.getHours()).padStart(2, '0');
+            const min = String(d.getMinutes()).padStart(2, '0');
+            updated.textContent = `${mm}-${dd}-${yyyy} ${hh}:${min}`;
+          }
+        }
       } catch (_err) {
         // keep fallback values
       }
