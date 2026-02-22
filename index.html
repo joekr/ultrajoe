@@ -366,10 +366,10 @@
       <section id="race-stats">
         <h2>2026 Stats</h2>
         <p style="color:var(--muted); margin: 0;">
-          <strong>Distance:</strong> <span id="stat-distance">209.7 mi</span><br>
-          <strong>Time:</strong> <span id="stat-time">39h 6m</span><br>
-          <strong>Elev Gain:</strong> <span id="stat-elev">11,188 ft</span><br>
-          <strong>Last Updated:</strong> <span id="stat-updated">--</span>
+          <strong>Distance:</strong> <span id="stat-distance">--- mi</span><br>
+          <strong>Time:</strong> <span id="stat-time">--h --m</span><br>
+          <strong>Elev Gain:</strong> <span id="stat-elev">------ ft</span><br>
+          <strong>Updated:</strong> <span id="stat-updated">---</span>
         </p>
       </section>
 
@@ -500,10 +500,12 @@
           if (!Number.isNaN(d.getTime())){
             const mm = String(d.getMonth() + 1).padStart(2, '0');
             const dd = String(d.getDate()).padStart(2, '0');
-            const yyyy = d.getFullYear();
-            const hh = String(d.getHours()).padStart(2, '0');
+            const hour24 = d.getHours();
+            const hour12 = ((hour24 + 11) % 12) + 1;
+            const ampm = hour24 >= 12 ? 'PM' : 'AM';
+            const hh = String(hour12).padStart(2, '0');
             const min = String(d.getMinutes()).padStart(2, '0');
-            updated.textContent = `${mm}-${dd}-${yyyy} ${hh}:${min}`;
+            updated.textContent = `${mm}-${dd} ${hh}:${min} ${ampm}`;
           }
         }
       } catch (_err) {
